@@ -33,22 +33,32 @@ void Completion::print_completions(char *cmd_buf, size_t *cmd_buf_n, const size_
         print_single_completion(cmd_buf, cmd_buf_n, cmd_buf_size);
     }
     else if (candidates_index > 1) {
-        printf("More candidates!\n");
+        print_multiple_completions(cmd_buf, cmd_buf_n, cmd_buf_size);
     }
 }
 
 void Completion::print_single_completion(char *cmd_buf, size_t *cmd_buf_n, const size_t cmd_buf_size)
 {
     auto only_candidate = candidates[candidates_index - 1];
+    auto start_of_completion = only_candidate.name + only_candidate.start_of_completion;
+    printf("%s", start_of_completion);
 
-    // Need to allocate a null terminated buffer since printf doesn't support limiting number of bytes to be written
-    const size_t suffix_size = 64;
-    char completion_suffix[suffix_size];
     auto cmd_buf_remaining = cmd_buf_size - *cmd_buf_n;
-    strlcpy(completion_suffix, only_candidate.name + only_candidate.start_of_completion, min(cmd_buf_remaining, suffix_size));
+    *cmd_buf_n += strlcpy(cmd_buf + *cmd_buf_n, start_of_completion, cmd_buf_remaining); // update cmd buffer
+}
 
-    printf("%s", completion_suffix);
-    *cmd_buf_n += strlcpy(cmd_buf + *cmd_buf_n, completion_suffix, cmd_buf_remaining); // update cmd buffer
+void Completion::print_multiple_completions(char *cmd_buf, size_t *cmd_buf_n, const size_t cmd_buf_size)
+{
+    printf("\n");
+
+    for (int i = 0; i < candidates_index; i++) {
+        printf("%s   ", candidates[i].name);
+    }
+
+    char null_terminated_cmd_buf[cmd_buf_size]; // cmd_buf might not be terminated and printf does not support precision
+    strlcpy(null_terminated_cmd_buf, cmd_buf, *cmd_buf_n + 1);
+
+    printf("\n> %s", null_terminated_cmd_buf); // reprint command prompt
 }
 
 namespace

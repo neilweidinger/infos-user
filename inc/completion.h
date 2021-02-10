@@ -15,6 +15,7 @@ class Completion
 
     private:
         void print_single_completion(char *cmd_buf, size_t *cmd_buf_n, const size_t cmd_buf_size);
+        void print_multiple_completions(char *cmd_buf, size_t *cmd_buf_n, const size_t cmd_buf_size);
 
         const char* PATH = "/usr";
         completion_candidate candidates[20]; // length 49 or higher causes page fault, page fault still occasionally occurs at lower values too

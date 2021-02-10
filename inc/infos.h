@@ -115,10 +115,4 @@ extern char getch();
 
 extern HFILE __console_handle;
 
-template <typename T>
-const T& min(const T& a, const T& b)
-{
-    return b < a ? b : a;
-}
-
 #define NULL 0
