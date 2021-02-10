@@ -109,9 +109,16 @@ extern int vsnprintf(char *buffer, int size, const char *fmt, va_list args);
 
 extern int strcmp(const char *l, const char *r);
 extern int strlen(const char *str);
+extern size_t strlcpy(char *dst, const char *src, size_t dst_size);
 
 extern char getch();
 
 extern HFILE __console_handle;
+
+template <typename T>
+const T& min(const T& a, const T& b)
+{
+    return b < a ? b : a;
+}
 
 #define NULL 0
