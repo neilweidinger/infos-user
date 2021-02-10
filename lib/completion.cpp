@@ -30,20 +30,25 @@ int Completion::find_completions(char *cmd_buf, size_t *cmd_buf_n, const size_t 
 void Completion::print_completions(char *cmd_buf, size_t *cmd_buf_n, const size_t cmd_buf_size)
 {
     if (candidates_index == 1) {
-        auto only_candidate = candidates[candidates_index - 1];
-
-        // Need to allocate a null terminated buffer since printf doesn't support limiting number of bytes to be written
-        const size_t suffix_size = 64;
-        char completion_suffix[suffix_size];
-        auto cmd_buf_remaining = cmd_buf_size - *cmd_buf_n;
-        strlcpy(completion_suffix, only_candidate.name + only_candidate.start_of_completion, min(cmd_buf_remaining, suffix_size));
-
-        printf("%s", completion_suffix);
-        *cmd_buf_n += strlcpy(cmd_buf + *cmd_buf_n, completion_suffix, cmd_buf_remaining);
+        print_single_completion(cmd_buf, cmd_buf_n, cmd_buf_size);
     }
     else if (candidates_index > 1) {
         printf("More candidates!\n");
     }
+}
+
+void Completion::print_single_completion(char *cmd_buf, size_t *cmd_buf_n, const size_t cmd_buf_size)
+{
+    auto only_candidate = candidates[candidates_index - 1];
+
+    // Need to allocate a null terminated buffer since printf doesn't support limiting number of bytes to be written
+    const size_t suffix_size = 64;
+    char completion_suffix[suffix_size];
+    auto cmd_buf_remaining = cmd_buf_size - *cmd_buf_n;
+    strlcpy(completion_suffix, only_candidate.name + only_candidate.start_of_completion, min(cmd_buf_remaining, suffix_size));
+
+    printf("%s", completion_suffix);
+    *cmd_buf_n += strlcpy(cmd_buf + *cmd_buf_n, completion_suffix, cmd_buf_remaining); // update cmd buffer
 }
 
 namespace
